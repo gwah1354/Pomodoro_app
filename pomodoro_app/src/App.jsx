@@ -46,27 +46,29 @@ function App() {
         
         <AnimatePresence mode="wait">
           {!isFocusMode ? (
-            <motion.h1
-              key="greeting"
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="text-3xl font-semibold text-gray-800 mb-8"
-            >
-              {getGreeting()}
-            </motion.h1>
-          ) : completionMessage ? (
-            <motion.h1
-              key="completion"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="text-3xl font-semibold text-gray-800 mb-8"
-            >
-              {completionMessage}
-            </motion.h1>
+            completionMessage ? (
+              <motion.h1
+                key="completion"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                className="text-3xl font-semibold text-gray-800 mb-8"
+              >
+                {completionMessage}
+              </motion.h1>
+            ) : (
+              <motion.h1
+                key="greeting"
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                className="text-3xl font-semibold text-gray-800 mb-8"
+              >
+                {getGreeting()}
+              </motion.h1>
+            )
           ) : (
             <motion.h1
               key="focus"

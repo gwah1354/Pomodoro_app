@@ -1,30 +1,18 @@
 // Simple completion sound effect
-// This creates a basic notification sound using Web Audio API
+// Plays confetti pop followed by soft chime when timer completes
 
 export const playCompletionSound = () => {
   try {
-    // Create audio context
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)()
-    
-    // Create oscillator for beep sound
-    const oscillator = audioContext.createOscillator()
-    const gainNode = audioContext.createGain()
-    
-    // Connect nodes
-    oscillator.connect(gainNode)
-    gainNode.connect(audioContext.destination)
-    
-    // Configure sound
-    oscillator.frequency.value = 800 // 800 Hz tone
-    oscillator.type = 'sine'
-    gainNode.gain.value = 0.3 // Volume
-    
-    // Play sound
-    oscillator.start(audioContext.currentTime)
-    oscillator.stop(audioContext.currentTime + 0.1) // 100ms duration
-    
-    console.log('Completion sound played')
+    const pop = new Audio("/sounds/confetti-pop.mp3?ts=" + Date.now())
+    pop.volume = 0.7
+    pop.play().catch(() => {})
+
+    setTimeout(() => {
+      const chime = new Audio("/sounds/soft-chime.mp3?ts=" + Date.now())
+      chime.volume = 0.6
+      chime.play().catch(() => {})
+    }, 500)
   } catch (error) {
-    console.log('Error playing sound:', error)
+    console.warn("Completion sound failed", error)
   }
 }

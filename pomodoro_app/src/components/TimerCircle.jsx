@@ -124,6 +124,9 @@ function TimerCircle({ onFocusModeChange, onCompletion }) {
     if (!isRunning && timeLeft > 0) {
       // Reset completion message when starting new session
       setCompletionMessage("")
+      if (onCompletion) {
+        onCompletion("")
+      }
       
       const end = new Date(Date.now() + timeLeft * 1000)
       setEndTime(end)
@@ -136,23 +139,39 @@ function TimerCircle({ onFocusModeChange, onCompletion }) {
   }
 
   useEffect(() => {
+    if (timeLeft === 0 && isRunning) {
+      setIsRunning(false)
+      setEndTime(null)
+      setIsFocusMode(false)
+      onFocusModeChange(false)
+      
+      // Play completion sound and trigger completion immediately
+      playCompletionSound()
+      if (onCompletion) {
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)]
+        onCompletion(randomMessage)
+      }
+      
+      // Trigger confetti immediately
+      confetti({
+        particleCount: 80,
+        spread: 60,
+        origin: { y: 0.6 },
+        colors: ["#E8D5C4", "#D6C2AF", "#CBB39C", "#F5F1E8"],
+        ticks: 50
+      })
+      
+      // Reset timer to default state but keep completion message
+      setTimeLeft(totalTime)
+      setTimeKey(prev => prev + 1)
+    }
+  }, [timeLeft, isRunning])
+
+  useEffect(() => {
     if (!isRunning) return
 
     const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 0) {
-          setIsRunning(false)
-          setEndTime(null)
-          setIsFocusMode(false)
-          onFocusModeChange(false)
-          triggerCompletion()
-          // Reset timer to default state
-          setTimeLeft(totalTime)
-          setTimeKey(prev => prev + 1)
-          return 0
-        }
-        return prev - 1
-      })
+      setTimeLeft(prev => prev - 1)
     }, 1000)
 
     return () => clearInterval(interval)
